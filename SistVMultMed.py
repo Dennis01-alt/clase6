@@ -1,5 +1,7 @@
+from datetime import datetime
 class Medicamento:
     def __init__(self):
+        self.__fecha = ""
         self.__nombre = "" 
         self.__dosis = 0 
     
@@ -11,18 +13,30 @@ class Medicamento:
     def asignarNombre(self,med):
         self.__nombre = med 
     def asignarDosis(self,med):
-        self.__dosis = med 
+        self.__dosis = med
+
+    def verFecha(self):
+        return self.__fecha    
+
+    def asignarFecha(self, fecha):
+        try:
+            datetime.strptime(fecha, "%d/%m/%Y")
+            self.__fecha = fecha
+        except ValueError:
+            print("Error: La fecha debe estar en el formato dd/mm/aaaa")
+            self.__fecha = "Fecha inválida"    
+        
+    
         
 class Mascota:
-    
     def __init__(self):
         self.__nombre= " "
         self.__historia=0
         self.__tipo=" "
         self.__peso=" "
         self.__fecha_ingreso=" "
-        self.__lista_medicamentos=[]
-        
+        self.__lista_medicamentos=[] 
+
     def verNombre(self):
         return self.__nombre
     def verHistoria(self):
@@ -34,8 +48,8 @@ class Mascota:
     def verFecha(self):
         return self.__fecha_ingreso
     def verLista_Medicamentos(self):
-        return self.__lista_medicamentos 
-            
+        return self.__lista_medicamentos  
+           
     def asignarNombre(self,n):
         self.__nombre=n
     def asignarHistoria(self,nh):
@@ -48,6 +62,18 @@ class Mascota:
         self.__fecha_ingreso=f
     def asignarLista_Medicamentos(self,n):
         self.__lista_medicamentos = n 
+
+    def eliminarMedicamento(self, nombre_medicamento):
+        encontrado = False
+        for med in self.__lista_medicamentos:
+            if med.verNombre() == nombre_medicamento:
+                self.__lista_medicamentos.remove(med)
+                print(f"Medicamento '{nombre_medicamento}' eliminado correctamente.")
+                encontrado = True
+                break
+            if not encontrado:
+                print(f"Medicamento '{nombre_medicamento}' no encontrado en la lista.")
+    
     
 class sistemaV:
     def __init__(self):
@@ -113,14 +139,19 @@ def main():
                 fecha=input("Ingrese la fecha de ingreso (dia/mes/año): ")
                 nm=int(input("Ingrese cantidad de medicamentos: "))
                 lista_med=[]
-
+                
+                nombres_usados = set() 
                 for i in range(0,nm):
                     nombre_medicamentos = input("Ingrese el nombre del medicamento: ")
-                    dosis =int(input("Ingrese la dosis: "))
+                    if nombre_medicamentos in nombres_usados:
+                         print("⚠ Ya se ingresó un medicamento con ese nombre. Intente otro.")
+                         continue  # salta al siguiente
+                    dosis = int(input("Ingrese la dosis: "))
                     medicamento = Medicamento()
                     medicamento.asignarNombre(nombre_medicamentos)
                     medicamento.asignarDosis(dosis)
                     lista_med.append(medicamento)
+                    nombres_usados.add(nombre_medicamentos)
 
                 mas= Mascota()
                 mas.asignarNombre(nombre)
